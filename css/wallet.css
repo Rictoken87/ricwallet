@@ -1,1 +1,474 @@
+/* wallet.css -- RicWallet Shared Styles */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap');
 
+:root {
+  --void:    #030407;
+  --deep:    #06080f;
+  --well:    #0b0d1a;
+  --card:    #0f1120;
+  --rim:     rgba(255,255,255,0.06);
+  --rim2:    rgba(255,77,0,0.25);
+  --magma:   #ff4d00;
+  --ember:   #ff8c00;
+  --gold:    #e8b84b;
+  --green:   #00ffb2;
+  --red:     #ff3366;
+  --blue:    #4d9fff;
+  --ash:     #4a4d60;
+  --smoke:   #7a7d96;
+  --fog:     #b8bad4;
+  --white:   #eef0f8;
+  --mono:    'JetBrains Mono', monospace;
+  --display: 'Bebas Neue', sans-serif;
+  --body:    'DM Sans', sans-serif;
+}
+
+/* -- Reset ----------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--void);
+  color: var(--fog);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* Combined reset -- your improvement */
+button, input, select, textarea {
+  font-family: var(--body);
+  outline: none;
+  border: none;
+}
+
+/* Noise overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.018;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* -- Layout ---------------------------------------------------- */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--void);
+}
+
+/* -- Top bar --------------------------------------------------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: rgba(3,4,7,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--rim);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-logo {
+  font-family: var(--display);
+  font-size: 22px;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, var(--gold), var(--magma));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lang-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--smoke);
+  background: var(--well);
+  border: 1px solid var(--rim);
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lang-btn:hover {
+  border-color: var(--magma);
+  color: var(--white);
+}
+
+/* -- Bottom nav ------------------------------------------------ */
+.bottomnav {
+  display: flex;
+  background: rgba(6,8,15,0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--rim);
+  position: sticky;
+  bottom: 0;
+  z-index: 100;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 0;
+  color: var(--ash);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Combined selector -- your improvement */
+.nav-item.active,
+.nav-item.active svg {
+  color: var(--magma);
+  stroke: var(--magma);
+}
+
+.nav-item:hover { color: var(--fog); }
+
+/* -- Cards ----------------------------------------------------- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--rim);
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,77,0,0.35), transparent);
+}
+
+/* -- Buttons --------------------------------------------------- */
+.btn-primary {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, var(--magma), var(--ember));
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(255,77,0,0.35);
+}
+
+.btn-primary:disabled {
+  background: var(--well);
+  color: var(--ash);
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-ghost {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid var(--rim);
+  color: var(--fog);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-ghost:hover {
+  border-color: var(--rim2);
+  color: var(--white);
+  background: rgba(255,77,0,0.05);
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  background: var(--well);
+  border: 1px solid var(--rim);
+  color: var(--fog);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-sm:hover { border-color: var(--magma); color: var(--magma); }
+
+/* -- Form elements --------------------------------------------- */
+.input-group { margin-bottom: 14px; }
+
+.input-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ash);
+  margin-bottom: 6px;
+}
+
+.input-field {
+  width: 100%;
+  background: var(--deep);
+  border: 1px solid var(--rim);
+  border-radius: 10px;
+  color: var(--white);
+  padding: 12px 14px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.input-field:focus { border-color: var(--magma); }
+.input-field::placeholder { color: var(--ash); }
+
+/* -- Section label --------------------------------------------- */
+.section-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ash);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rim);
+}
+
+/* -- Badges ---------------------------------------------------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.badge-green  { background: rgba(0,255,178,.1);   color: var(--green); border: 1px solid rgba(0,255,178,.2); }
+.badge-red    { background: rgba(255,51,102,.1);   color: var(--red);   border: 1px solid rgba(255,51,102,.2); }
+.badge-orange { background: rgba(255,77,0,.1);     color: var(--magma); border: 1px solid rgba(255,77,0,.2); }
+.badge-gray   { background: rgba(255,255,255,.05); color: var(--smoke); border: 1px solid var(--rim); }
+
+.dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.dot-pulse { animation: pulse 2s ease-in-out infinite; }
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* -- Progress bar ---------------------------------------------- */
+.progress-track {
+  height: 4px;
+  background: var(--well);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--magma), var(--ember));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* -- Connect screen -------------------------------------------- */
+.connect-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+  gap: 16px;
+}
+
+.connect-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1px solid var(--rim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.connect-title {
+  font-family: var(--display);
+  font-size: 28px;
+  letter-spacing: 1px;
+  color: var(--white);
+}
+
+.connect-sub {
+  font-size: 13px;
+  color: var(--smoke);
+  max-width: 260px;
+  line-height: 1.6;
+}
+
+/* -- Amounts --------------------------------------------------- */
+.amount-display {
+  font-family: var(--display);
+  font-size: 42px;
+  letter-spacing: 1px;
+  color: var(--white);
+  line-height: 1;
+}
+
+.amount-sub {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ash);
+  margin-top: 4px;
+}
+
+/* -- Spinner --------------------------------------------------- */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--rim);
+  border-top-color: var(--magma);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* -- Divider --------------------------------------------------- */
+.divider { height: 1px; background: var(--rim); margin: 16px 0; }
+
+/* -- Token pill ------------------------------------------------ */
+.token-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--rim);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.token-pill:hover { background: rgba(255,255,255,.07); }
+
+.token-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--mono);
+  flex-shrink: 0;
+}
+
+/* -- Toasts ---------------------------------------------------- */
+.toast-container {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 90%;
+  max-width: 420px;
+}
+
+.toast {
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: var(--mono);
+  backdrop-filter: blur(20px);
+  animation: slideDown 0.3s ease;
+}
+
+.toast-success { background: rgba(0,255,178,.12);  border: 1px solid rgba(0,255,178,.3);  color: var(--green); }
+.toast-error   { background: rgba(255,51,102,.12); border: 1px solid rgba(255,51,102,.3); color: var(--red); }
+.toast-info    { background: rgba(77,159,255,.12); border: 1px solid rgba(77,159,255,.3); color: var(--blue); }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* -- Fade-in entrance animation -------------------------------- */
+.fade-in { animation: fadeIn 0.4s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* -- Scroll area ----------------------------------------------- */
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-area::-webkit-scrollbar { display: none; }
+
+/* -- Responsive ------------------------------------------------ */
+@media (max-width: 380px) {
+  .scroll-area { padding: 14px; }
+  .amount-display { font-size: 36px; }
+}
