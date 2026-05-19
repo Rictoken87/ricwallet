@@ -1,1 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#030407">
+  <meta name="description" content="Learn & Earn - RicWallet">
+  <title>Learn & Earn - RicWallet</title>
+  <link rel="stylesheet" href="../css/wallet.css">
+  <style>
+    /*  Hero  */
+    .hero { padding: 24px 0 8px; text-align: center; }
+    .hero-title {
+      font-family: var(--display);
+      font-size: 36px;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, var(--gold), var(--magma));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-sub { font-size: 13px; color: var(--smoke); margin-top: 4px; }
 
+    /*  Stats  */
+    .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat-card { background: var(--card); border: 1px solid var(--rim); border-radius: 12px; padding: 16px; text-align: center; }
+    .stat-num { font-family: var(--display); font-size: 28px; color: var(--white); }
+    .stat-num.gold { background: linear-gradient(135deg, var(--gold), var(--magma)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .stat-label { font-family: var(--mono); font-size: 10px; color: var(--ash); margin-top: 2px; letter-spacing: 1px; text-transform: uppercase; }
+
+    /*  Lesson cards  */
+    .lesson-card { background: var(--card); border: 1px solid var(--rim); border-radius: 14px; overflow: hidden; transition: all .2s; cursor: pointer; }
+    .lesson-card:hover { border-color: var(--rim2); transform: translateY(-1px); }
+    .lesson-card.completed { border-color: rgba(0,255,178,.25); }
+
+    .lesson-header { display: flex; align-items: center; gap: 14px; padding: 16px; }
+    .lesson-num { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-size: 16px; flex-shrink: 0; }
+    .lesson-num.done   { background: rgba(0,255,178,.15); color: var(--green); }
+    .lesson-num.active { background: linear-gradient(135deg, var(--magma), var(--ember)); color: white; }
+    .lesson-num.locked { background: var(--well); color: var(--ash); }
+
+    .lesson-body { flex: 1; }
+    .lesson-title { font-size: 14px; font-weight: 500; color: var(--white); line-height: 1.3; }
+    .lesson-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 11px; flex-wrap: wrap; }
+    .lesson-time   { font-family: var(--mono); color: var(--ash); }
+    .lesson-reward { font-family: var(--mono); color: var(--magma); }
+
+    .lesson-expanded { padding: 0 16px 16px; border-top: 1px solid var(--rim); }
+    .lesson-desc { font-size: 13px; color: var(--smoke); line-height: 1.6; margin: 12px 0; }
+    .lesson-points { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; }
+    .lesson-point { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--fog); }
+    .lesson-point::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--magma); margin-top: 8px; flex-shrink: 0; }
+
+    /*  Quiz  */
+    .quiz-area { background: var(--deep); border-radius: 10px; padding: 16px; margin-top: 12px; border: 1px solid var(--rim); }
+    .quiz-q { font-size: 14px; color: var(--white); margin-bottom: 12px; font-weight: 500; }
+    .quiz-opt { padding: 12px 14px; border-radius: 8px; border: 1px solid var(--rim); margin-bottom: 8px; font-size: 13px; color: var(--fog); cursor: pointer; transition: all .2s; }
+    .quiz-opt:hover { border-color: var(--magma); color: var(--white); }
+    .quiz-opt.correct { background: rgba(0,255,178,.1); border-color: var(--green); color: var(--green); }
+    .quiz-opt.wrong   { background: rgba(255,51,102,.1); border-color: var(--red); color: var(--red); }
+
+    /*  Certificate  */
+    .cert-card { background: linear-gradient(135deg, #0f1120, #1a0d10); border: 1px solid rgba(232,184,75,.3); border-radius: 16px; padding: 28px 20px; text-align: center; }
+    .cert-icon { font-size: 44px; margin-bottom: 12px; }
+    .cert-title { font-family: var(--display); font-size: 26px; letter-spacing: 2px; background: linear-gradient(135deg, var(--gold), var(--ember)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .cert-sub { font-size: 13px; color: var(--smoke); margin: 8px 0 16px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <button onclick="history.back()" id="backBtn" style="background:none;border:none;color:var(--fog);cursor:pointer;display:flex;align-items:center;gap:6px;font-size:14px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back
+    </button>
+    <div class="topbar-logo">RicWallet</div>
+    <button class="lang-btn" id="langBtn" onclick="cycleLang()">EN</button>
+  </div>
+
+  <div class="scroll-area">
+    <!-- Hero -->
+    <div class="hero fade-in">
+      <div class="hero-title" id="pageTitle">LEARN &amp; EARN</div>
+      <div class="hero-sub" id="pageSub">Complete lessons to earn RIC rewards</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row fade-in">
+      <div class="stat-card">
+        <div class="stat-num gold" id="ricEarnedStat">0</div>
+        <div class="stat-label" id="ricEarnedLabel">RIC Earned</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="lessonsDoneStat">0/5</div>
+        <div class="stat-label" id="lessonsDoneLabel">Lessons Done</div>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div>
+      <div class="section-label" id="progressLabel">Your Progress</div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Lessons -->
+    <div id="lessonsList"></div>
+
+    <!-- Certificate -->
+    <div id="certArea" style="display:none">
+      <div class="cert-card fade-in">
+        <div class="cert-icon">&#127942;</div>
+        <div class="cert-title" id="certTitle">CERTIFIED</div>
+        <div class="cert-sub" id="certSub">You have completed all lessons</div>
+        <button class="btn-primary" id="claimBtn" onclick="claimCert()">Claim Certificate</button>
+      </div>
+    </div>
+
+    <div style="text-align:center;padding:8px 0;">
+      <span style="font-family:var(--mono);font-size:10px;color:var(--ash)">Taught by a certified finance &amp; IPO professional</span>
+    </div>
+  </div>
+
+  <!-- Bottom nav -->
+  <nav class="bottomnav">
+    <a class="nav-item" href="index.html">
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      <span id="nav-wallet">Wallet</span>
+    </a>
+    <a class="nav-item" href="swap.html">
+      <svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+      <span id="nav-swap">Swap</span>
+    </a>
+    <a class="nav-item active" href="learn.html">
+      <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <span id="nav-learn">Learn</span>
+    </a>
+    <a class="nav-item" href="history.html">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span id="nav-history">History</span>
+    </a>
+  </nav>
+</div>
+
+<script type="module">
+import { t, getLang, setLang } from '../js/i18n.js';
+import { showToast } from '../js/wallet-core.js';
+
+const langKeys = ['en','kh','vi','zh'];
+let lang         = getLang();
+let expanded     = null;
+let quizState    = {};
+
+//  Lesson data 
+const LESSONS = [
+  {
+    id: 1, reward: 10, time: '5 min',
+    title: 'What is a gasless transaction?',
+    desc: 'Traditional blockchain transactions require users to pay gas fees in native tokens like ETH or BONE. RicWallet changes this completely -- you sign a message for free, and the relayer pays the gas on your behalf.',
+    points: [
+      'Gas fees are payments to blockchain validators for processing transactions',
+      'RicWallet uses a ForwarderContract to submit transactions on your behalf',
+      'You pay a small RIC fee instead of BONE gas',
+      'Anyone can transact without holding the native token',
+    ],
+    quiz: {
+      q: 'What does the RicWallet relayer do for you?',
+      options: ['Stores your private keys', 'Pays the BONE gas on your behalf', 'Converts your tokens automatically', 'Creates a new wallet for you'],
+      correct: 1,
+    },
+  },
+  {
+    id: 2, reward: 10, time: '5 min',
+    title: 'How to swap tokens safely on RicSwap',
+    desc: 'Swapping tokens on a decentralized exchange (DEX) is different from a centralized exchange. You maintain full control of your funds at all times. RicSwap is an automated market maker (AMM) that provides instant liquidity.',
+    points: [
+      'Always check the price impact before confirming a swap',
+      'Set slippage tolerance to 0.5-1% for stable tokens, higher for volatile ones',
+      'Verify the token contract address matches the official address',
+      'Never approve unlimited allowances to unknown contracts',
+    ],
+    quiz: {
+      q: 'What should you always check before confirming a swap?',
+      options: ['Your email inbox', 'The price impact percentage', 'Your internet speed', 'The weather forecast'],
+      correct: 1,
+    },
+  },
+  {
+    id: 3, reward: 10, time: '6 min',
+    title: 'How to spot a rug pull',
+    desc: 'A rug pull occurs when developers abandon a project and take investor funds. In 2024, over $2.8 billion was lost to crypto scams globally. Learning to identify warning signs can protect your investments.',
+    points: [
+      'Check if the liquidity is locked -- unlocked liquidity can be removed instantly',
+      'Verify the team is doxxed (publicly identified) or has a credible track record',
+      'Look for audit reports from reputable firms like CertiK or Hacken',
+      'Be suspicious of anonymous teams promising guaranteed returns',
+    ],
+    quiz: {
+      q: 'Which of these is a major red flag for a rug pull?',
+      options: ['The project has an audit', 'Liquidity is not locked', 'The team is publicly known', 'The contract is open source'],
+      correct: 1,
+    },
+  },
+  {
+    id: 4, reward: 10, time: '7 min',
+    title: 'What is an IPO vs a token launch',
+    desc: 'Traditional IPOs allow companies to raise capital by selling shares to the public. Token launches are the blockchain equivalent -- but with key differences in regulation, access, and global reach.',
+    points: [
+      'An IPO requires regulatory approval, audited financials, and millions in legal fees',
+      'A token launch can happen in weeks with a fraction of the cost',
+      'IPO shares represent company equity; tokens may represent utility, governance, or both',
+      'RicSwap is building a bridge between traditional businesses and DeFi capital',
+    ],
+    quiz: {
+      q: 'What is one major advantage of a token launch over a traditional IPO?',
+      options: ['More government protection', 'Faster and lower cost', 'Higher guaranteed returns', 'More paperwork required'],
+      correct: 1,
+    },
+  },
+  {
+    id: 5, reward: 10, time: '6 min',
+    title: 'How to read tokenomics',
+    desc: "Tokenomics (token economics) determines a token's long-term value. Understanding supply, distribution, and burn mechanisms helps you evaluate whether a project is designed to create value or extract it.",
+    points: [
+      'Total supply vs circulating supply: large locked supply can be a red flag if it unlocks suddenly',
+      'Burn mechanisms reduce supply over time, creating scarcity if demand is constant',
+      'Vesting schedules show when team tokens unlock -- large unlocks cause selling pressure',
+      'RIC uses multiple burn mechanisms: gas fees, swap fees, and launch platform fees',
+    ],
+    quiz: {
+      q: "What does a burn mechanism do to a token's supply?",
+      options: ['Increases it permanently', 'Has no effect', 'Reduces it permanently', 'Transfers it to the team'],
+      correct: 2,
+    },
+  },
+];
+
+//  Progress (keep original key to preserve saved progress) 
+function getProgress() {
+  try {
+    return JSON.parse(localStorage.getItem('ricwallet_learn') || '{}');
+  } catch { return {}; }
+}
+
+function saveProgress(progress) {
+  localStorage.setItem('ricwallet_learn', JSON.stringify(progress));
+}
+
+function totalCompleted() { return Object.keys(getProgress()).length; }
+
+//  Stats 
+function updateStats() {
+  const done = totalCompleted();
+  document.getElementById('ricEarnedStat').textContent    = done * 10;
+  document.getElementById('lessonsDoneStat').textContent  = `${done}/5`;
+  document.getElementById('progressFill').style.width     = `${(done / 5) * 100}%`;
+  document.getElementById('certArea').style.display       = done === 5 ? 'block' : 'none';
+}
+
+//  Language 
+window.cycleLang = () => {
+  const idx = langKeys.indexOf(lang);
+  lang = langKeys[(idx + 1) % langKeys.length];
+  setLang(lang);
+  applyLang();
+  renderLessons();
+};
+
+function applyLang() {
+  document.getElementById('langBtn').textContent          = lang.toUpperCase();
+  document.getElementById('backBtn').lastChild.textContent = ' ' + t('back', lang);
+  document.getElementById('pageTitle').textContent        = t('learn_earn', lang).toUpperCase();
+  document.getElementById('pageSub').textContent          = t('learn_desc', lang);
+  document.getElementById('ricEarnedLabel').textContent   = t('ric_earned', lang);
+  document.getElementById('lessonsDoneLabel').textContent = t('lessons_done', lang);
+  document.getElementById('progressLabel').textContent    = t('your_progress', lang);
+  document.getElementById('nav-wallet').textContent       = t('wallet', lang);
+  document.getElementById('nav-swap').textContent         = t('swap', lang);
+  document.getElementById('nav-learn').textContent        = t('learn', lang);
+  document.getElementById('nav-history').textContent      = t('history', lang);
+  document.querySelectorAll('[data-lang]').forEach(o => {
+    o.classList.toggle('active', o.dataset.lang === lang);
+  });
+  if (document.getElementById('certTitle')) {
+    document.getElementById('certTitle').textContent = t('certificate', lang);
+    document.getElementById('certSub').textContent   = t('learn_desc', lang);
+    document.getElementById('claimBtn').textContent  = t('claim_cert', lang);
+  }
+}
+
+//  Render lessons 
+function renderLessons() {
+  const prog = getProgress();
+  const done = totalCompleted();
+  const list = document.getElementById('lessonsList');
+
+  list.innerHTML = LESSONS.map((lesson, idx) => {
+    const isCompleted = !!prog[lesson.id];
+    const isActive    = !isCompleted && idx === done;
+    const isLocked    = !isCompleted && idx > done;
+    const isOpen      = expanded === lesson.id;
+
+    const numClass = isCompleted ? 'done' : isActive ? 'active' : 'locked';
+    const numContent = isCompleted
+      ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
+      : lesson.id;
+
+    const badge = isCompleted
+      ? `<span class="badge badge-green"><span class="dot"></span>${t('completed', lang)}</span>`
+      : isActive
+        ? `<span class="badge badge-orange"><span class="dot dot-pulse"></span>${t('start_lesson', lang)}</span>`
+        : `<span class="badge badge-gray">${t('lesson', lang)} ${lesson.id}</span>`;
+
+    const expandedHtml = isOpen ? `
+      <div class="lesson-expanded">
+        <div class="lesson-desc">${lesson.desc}</div>
+        <div class="lesson-points">
+          ${lesson.points.map(p => `<div class="lesson-point">${p}</div>`).join('')}
+        </div>
+        ${!isCompleted ? renderQuiz(lesson) : `<div class="badge badge-green" style="margin-top:12px"><span class="dot"></span>${t('completed',lang)} +${lesson.reward} RIC</div>`}
+      </div>` : '';
+
+    return `
+      <div class="lesson-card ${isCompleted ? 'completed' : ''}" onclick="toggleLesson(${lesson.id}, ${isLocked})">
+        <div class="lesson-header">
+          <div class="lesson-num ${numClass}">${numContent}</div>
+          <div class="lesson-body">
+            <div class="lesson-title">${lesson.title}</div>
+            <div class="lesson-meta">
+              <span class="lesson-time">${lesson.time}</span>
+              <span class="lesson-reward">+${lesson.reward} RIC</span>
+              ${badge}
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ash)" stroke-width="2">
+            ${isOpen ? '<polyline points="18 15 12 9 6 15"/>' : '<polyline points="6 9 12 15 18 9"/>'}
+          </svg>
+        </div>
+        ${expandedHtml}
+      </div>`;
+  }).join('');
+}
+
+function renderQuiz(lesson) {
+  const state = quizState[lesson.id] || {};
+  return `
+    <div class="quiz-area" id="quiz-${lesson.id}">
+      <div class="quiz-q">${lesson.quiz.q}</div>
+      ${lesson.quiz.options.map((opt, i) => {
+        let cls = '';
+        if (state.answered) {
+          cls = i === lesson.quiz.correct ? 'correct' : (i === state.chosen ? 'wrong' : '');
+        }
+        return `<div class="quiz-opt ${cls}" onclick="answerQuiz(event,${lesson.id},${i})">${opt}</div>`;
+      }).join('')}
+      ${state.answered && state.chosen === lesson.quiz.correct
+        ? `<button class="btn-primary" style="margin-top:12px" onclick="completeLesson(event,${lesson.id})">${t('earn_ric',lang)} +${lesson.reward} RIC</button>`
+        : ''}
+    </div>`;
+}
+
+//  Interactions 
+window.toggleLesson = (id, locked) => {
+  if (locked) { showToast('Complete the previous lesson first', 'info'); return; }
+  expanded = expanded === id ? null : id;
+  renderLessons();
+};
+
+window.answerQuiz = (e, lessonId, chosen) => {
+  e.stopPropagation();
+  if (quizState[lessonId]?.answered) return;
+  quizState[lessonId] = { answered: true, chosen };
+  renderLessons();
+};
+
+window.completeLesson = (e, lessonId) => {
+  e.stopPropagation();
+  const prog = getProgress();
+  prog[lessonId] = { completedAt: Date.now(), ricEarned: 10 };
+  saveProgress(prog);
+  quizState[lessonId] = {};
+  expanded = null;
+  updateStats();
+  renderLessons();
+  showToast('+10 RIC earned! Great work.', 'success');
+};
+
+window.claimCert = () => {
+  showToast('Certificate feature coming with wallet connection!', 'info');
+};
+
+//  Init 
+applyLang();
+updateStats();
+renderLessons();
+</script>
+</body>
+</html>
