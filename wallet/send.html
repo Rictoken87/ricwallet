@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#030407">
+<title>Send - RicWallet</title>
+<link rel="stylesheet" href="../css/wallet.css">
+<style>
+.send-hero { text-align:center; padding:20px 0 8px; }
+.send-title { font-family:var(--display); font-size:32px; letter-spacing:2px; color:var(--white); }
+.token-selector { display:flex; align-items:center; justify-content:space-between; background:var(--deep); border:1px solid var(--rim); border-radius:12px; padding:12px 16px; cursor:pointer; transition:border-color .2s; }
+.token-selector:hover { border-color:var(--rim2); }
+.token-selector-left { display:flex; align-items:center; gap:10px; }
+.chevron { color:var(--ash); }
+.amount-input-row { display:flex; align-items:center; gap:8px; }
+.amount-input { flex:1; background:transparent; border:none; font-family:var(--display); font-size:32px; color:var(--white); letter-spacing:1px; }
+.amount-input::placeholder { color:var(--ash); }
+.max-btn { font-family:var(--mono); font-size:10px; letter-spacing:1px; background:rgba(255,77,0,.1); border:1px solid rgba(255,77,0,.3); color:var(--magma); padding:5px 10px; border-radius:6px; cursor:pointer; transition:all .2s; }
+.max-btn:hover { background:rgba(255,77,0,.2); }
+.fee-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; }
+.fee-label { font-family:var(--mono); font-size:11px; color:var(--ash); }
+.fee-value { font-family:var(--mono); font-size:11px; }
+.fee-free { color:var(--green); }
+.fee-ric { color:var(--magma); }
+.review-card { background:var(--deep); border:1px solid var(--rim); border-radius:12px; padding:16px; }
+.review-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--rim); }
+.review-row:last-child { border-bottom:none; }
+.review-key { font-family:var(--mono); font-size:11px; color:var(--ash); }
+.review-val { font-size:13px; color:var(--white); font-family:var(--mono); }
+.token-modal { position:fixed; inset:0; background:rgba(3,4,7,.92); backdrop-filter:blur(12px); z-index:500; display:flex; align-items:flex-end; }
+.token-sheet { width:100%; max-width:480px; margin:0 auto; background:var(--card); border-radius:20px 20px 0 0; border-top:1px solid var(--rim); padding:20px; max-height:70vh; overflow-y:auto; }
+.token-sheet::-webkit-scrollbar { width:0; }
+.token-opt { display:flex; align-items:center; gap:12px; padding:12px; border-radius:10px; cursor:pointer; transition:background .15s; }
+.token-opt:hover { background:rgba(255,255,255,.04); }
+.token-opt-right { margin-left:auto; font-family:var(--mono); font-size:12px; color:var(--fog); }
+.handle { width:36px; height:3px; background:var(--rim); border-radius:2px; margin:0 auto 16px; }
+.success-state { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px 20px; gap:16px; }
+.success-icon { width:72px; height:72px; border-radius:50%; background:rgba(0,255,178,.1); border:1px solid rgba(0,255,178,.2); display:flex; align-items:center; justify-content:center; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <button onclick="history.back()" style="background:none;border:none;color:var(--fog);cursor:pointer;display:flex;align-items:center;gap:6px;font-size:14px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      <span id="backBtn">Back</span>
+    </button>
+    <div class="topbar-logo" style="display:flex;align-items:center;gap:8px;">
+      <img src="../assets/riclogo.jpeg" alt="RicWallet Logo" style="height:28px;width:auto;object-fit:contain;border-radius:4px;">
+      <span>RicWallet</span>
+    </div>
+    <button class="lang-btn" id="langBtn" onclick="cycleLang()">EN</button>
+  </div>
+
+  <div class="scroll-area" id="mainContent">
+    <!-- Injected by JS -->
+  </div>
+
+  <nav class="bottomnav">
+    <a class="nav-item" href="index.html">
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      <span id="nav-wallet">Wallet</span>
+    </a>
+    <a class="nav-item" href="https://www.ricswap.com/swap.html" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+      <span id="nav-swap">Swap</span>
+    </a>
+    <a class="nav-item" href="learn.html">
+      <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <span id="nav-learn">Learn</span>
+    </a>
+    <a class="nav-item" href="history.html">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span id="nav-history">History</span>
+    </a>
+  </nav>
+</div>
+
+<!-- Token selector modal -->
+<div class="token-modal" id="tokenModal" style="display:none" onclick="closeTokenModal(event)">
+  <div class="token-sheet">
+    <div class="handle"></div>
+    <div class="section-label" id="selectLabel">Select Token</div>
+    <div id="tokenOptList"></div>
+  </div>
+</div>
+
+<script type="module">
+import { t, getLang, setLang } from '../js/i18n.js';
+import { getAllTokens, NATIVE_BONE, getTokenColor } from '../js/tokens.js';
+import { isConnected, restoreSession, getAddress, getNativeBalance, getTokenBalance, formatAmount, parseAmount, sendToken, sendNativeToken, estimateRIC, showToast, explorerTx, shortAddr } from '../js/wallet-core.js';
+
+const langKeys = ['en','kh','vi','zh'];
+let lang = getLang();
+let selectedToken = NATIVE_BONE;
+let step = 'form'; // form | review | success
+let txHash = '';
+let balances = {};
+
+async function init() {
+  await restoreSession();
+  applyLang();
+  if (!isConnected()) {
+    renderNotConnected();
+    return;
+  }
+  await loadBalances();
+  renderForm();
+}
+
+window.cycleLang = () => {
+  lang = langKeys[(langKeys.indexOf(lang)+1) % langKeys.length];
+  setLang(lang);
+  document.getElementById('langBtn').textContent = lang.toUpperCase();
+  applyLang();
+  if (step === 'form') renderForm();
+};
+
+function applyLang() {
+  document.getElementById('langBtn').textContent  = lang.toUpperCase();
+  document.getElementById('backBtn').textContent  = t('back', lang);
+  document.getElementById('nav-wallet').textContent   = t('wallet', lang);
+  document.getElementById('nav-swap').textContent     = t('swap', lang);
+  document.getElementById('nav-learn').textContent    = t('learn', lang);
+  document.getElementById('nav-history').textContent  = t('history', lang);
+}
+
+async function loadBalances() {
+  const addr = getAddress();
+  const tokens = getAllTokens();
+  for (const tk of tokens) {
+    try {
+      balances[tk.address] = tk.isNative
+        ? await getNativeBalance(addr)
+        : await getTokenBalance(tk.address, addr);
+    } catch { balances[tk.address] = 0n; }
+  }
+}
+
+function renderNotConnected() {
+  document.getElementById('mainContent').innerHTML = `
+    <div class="connect-state fade-in">
+      <div class="connect-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ff4d00" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+      <div class="connect-title">${t('connect_wallet',lang)}</div>
+      <div class="connect-sub">${t('connect_desc',lang)}</div>
+      <button class="btn-primary" onclick="location.href='index.html'">${t('connect_wallet',lang)}</button>
+    </div>`;
+}
+
+function renderForm() {
+  step = 'form';
+  const bal = balances[selectedToken.address] || 0n;
+  const balFmt = formatAmount(bal, selectedToken.decimals, 4);
+  const c = document.getElementById('mainContent');
+  c.innerHTML = `
+    <div class="send-hero fade-in">
+      <div class="send-title">${t('send_tokens',lang)}</div>
+    </div>
+
+    <div class="card fade-in">
+      <div class="input-label">${t('select_token',lang)}</div>
+      <div class="token-selector" onclick="openTokenModal()">
+        <div class="token-selector-left">
+          <div class="token-icon" style="background:${selectedToken.color}22;color:${selectedToken.color};font-size:10px;font-weight:700;font-family:var(--mono)">
+            ${selectedToken.symbol.slice(0,3)}
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:500;color:var(--white)">${selectedToken.symbol}</div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--ash)">${t('balance',lang)}: ${balFmt}</div>
+          </div>
+        </div>
+        <div class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="input-group">
+        <label class="input-label">${t('amount',lang)}</label>
+        <div style="background:var(--deep);border:1px solid var(--rim);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:8px;" id="amtWrap">
+          <input class="amount-input" type="number" id="amtInput" placeholder="${t('amount_placeholder',lang)}" step="any" min="0" oninput="onAmtInput()">
+          <button class="max-btn" onclick="setMax()">${t('max',lang)}</button>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">${t('recipient',lang)}</label>
+        <input class="input-field" id="toInput" placeholder="${t('recipient_placeholder',lang)}" oninput="onToInput()">
+      </div>
+
+      <div class="divider"></div>
+      <div class="fee-row">
+        <span class="fee-label">${t('gas_fee',lang)}</span>
+        <span class="fee-value fee-free">${t('gas_free',lang)}</span>
+      </div>
+      <div class="fee-row">
+        <span class="fee-label">${t('ric_cost',lang)}</span>
+        <span class="fee-value fee-ric" id="ricCost">~0.001 RIC</span>
+      </div>
+    </div>
+
+    <button class="btn-primary fade-in" id="reviewBtn" onclick="doReview()" disabled>${t('review_send',lang)}</button>
+  `;
+
+  // Focus input after render
+  setTimeout(() => document.getElementById('amtInput')?.focus(), 100);
+  loadRicEstimate();
+}
+
+async function loadRicEstimate() {
+  const est = await estimateRIC(80000);
+  const el = document.getElementById('ricCost');
+  if (el) el.textContent = `~${est} RIC`;
+}
+
+window.onAmtInput = validateForm;
+window.onToInput = validateForm;
+
+function validateForm() {
+  const amt = document.getElementById('amtInput')?.value;
+  const to  = document.getElementById('toInput')?.value;
+  const btn = document.getElementById('reviewBtn');
+  if (!btn) return;
+  const valid = amt && parseFloat(amt) > 0 && to && to.startsWith('0x') && to.length === 42;
+  btn.disabled = !valid;
+}
+
+window.setMax = () => {
+  const bal = balances[selectedToken.address] || 0n;
+  const fmt = formatAmount(bal, selectedToken.decimals, 6);
+  const inp = document.getElementById('amtInput');
+  if (inp) { inp.value = fmt; validateForm(); }
+};
+
+window.doReview = () => {
+  const amt  = document.getElementById('amtInput')?.value;
+  const to   = document.getElementById('toInput')?.value;
+  if (!amt || !to) return;
+  renderReview(amt, to);
+};
+
+function renderReview(amt, to) {
+  step = 'review';
+  const c = document.getElementById('mainContent');
+  c.innerHTML = `
+    <div class="send-hero fade-in">
+      <div class="send-title">${t('confirm_send',lang)}</div>
+    </div>
+    <div class="review-card fade-in">
+      <div class="review-row">
+        <span class="review-key">${t('select_token',lang)}</span>
+        <span class="review-val">${selectedToken.symbol}</span>
+      </div>
+      <div class="review-row">
+        <span class="review-key">${t('amount',lang)}</span>
+        <span class="review-val">${amt} ${selectedToken.symbol}</span>
+      </div>
+      <div class="review-row">
+        <span class="review-key">${t('recipient',lang)}</span>
+        <span class="review-val">${shortAddr(to)}</span>
+      </div>
+      <div class="review-row">
+        <span class="review-key">${t('gas_fee',lang)}</span>
+        <span class="review-val" style="color:var(--green)">${t('gas_free',lang)}</span>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--ash);text-align:center;font-family:var(--mono);padding:4px 0;" id="signNote">${t('sign_message',lang)}</div>
+    <button class="btn-primary fade-in" id="sendBtn" onclick="doSend('${amt}','${to}')">${t('confirm_send',lang)}</button>
+    <button class="btn-ghost fade-in" onclick="renderForm()" style="margin-top:8px">${t('back',lang)}</button>
+  `;
+}
+
+window.doSend = async (amt, to) => {
+  const btn = document.getElementById('sendBtn');
+  if (!btn) return;
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner" style="margin-right:8px"></span>${t('sending',lang)}`;
+  try {
+    const amtBn = parseAmount(amt, selectedToken.decimals);
+    let result;
+    if (selectedToken.isNative) {
+      result = await sendNativeToken(to, amtBn);
+    } else {
+      result = await sendToken(selectedToken.address, to, amtBn);
+    }
+    txHash = result.hash;
+    renderSuccess(amt, to);
+  } catch(e) {
+    showToast(e.message || t('send_failed', lang), 'error');
+    btn.disabled = false;
+    btn.textContent = t('confirm_send', lang);
+  }
+};
+
+function renderSuccess(amt, to) {
+  step = 'success';
+  const c = document.getElementById('mainContent');
+  c.innerHTML = `
+    <div class="success-state fade-in">
+      <div class="success-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00ffb2" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="connect-title" style="font-size:26px">${t('send_success',lang)}</div>
+      <div style="font-family:var(--mono);font-size:13px;color:var(--smoke)">${amt} ${selectedToken.symbol}</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--ash)">${t('recipient',lang)}: ${shortAddr(to)}</div>
+      ${txHash ? `<a href="${'https://shibariumscan.io/tx/'+txHash}" target="_blank" class="btn-sm" style="margin-top:4px">${t('view_on_explorer',lang)}</a>` : ''}
+      <button class="btn-primary" style="margin-top:12px" onclick="renderForm()">${t('send',lang)} ${t('again','en') || 'Again'}</button>
+      <a class="btn-ghost" href="index.html" style="margin-top:8px;text-align:center;padding:14px;border-radius:12px;border:1px solid var(--rim);color:var(--fog);display:block">${t('back',lang)}</a>
+    </div>
+  `;
+}
+
+// -- Token modal -----------------------------------------------
+window.openTokenModal = () => {
+  const tokens = getAllTokens();
+  const listEl = document.getElementById('tokenOptList');
+  document.getElementById('selectLabel').textContent = t('select_token', lang);
+  listEl.innerHTML = tokens.map(tk => {
+    const bal = balances[tk.address] || 0n;
+    const fmt = formatAmount(bal, tk.decimals, 4);
+    return `
+      <div class="token-opt" onclick="selectToken('${tk.address}')">
+        <div class="token-icon" style="background:${tk.color}22;color:${tk.color};font-size:10px;font-weight:700;font-family:var(--mono)">${tk.symbol.slice(0,3)}</div>
+        <div><div style="font-size:14px;font-weight:500;color:var(--white)">${tk.symbol}</div><div style="font-size:11px;color:var(--ash)">${tk.name}</div></div>
+        <span class="token-opt-right">${fmt}</span>
+      </div>`;
+  }).join('');
+  document.getElementById('tokenModal').style.display = 'flex';
+};
+
+window.selectToken = (addr) => {
+  const tokens = getAllTokens();
+  selectedToken = tokens.find(tk => tk.address === addr) || NATIVE_BONE;
+  document.getElementById('tokenModal').style.display = 'none';
+  renderForm();
+};
+
+window.closeTokenModal = (e) => {
+  if (e.target === document.getElementById('tokenModal'))
+    document.getElementById('tokenModal').style.display = 'none';
+};
+
+window.renderForm = renderForm;
+
+init();
+</script>
+</body>
+</html>
